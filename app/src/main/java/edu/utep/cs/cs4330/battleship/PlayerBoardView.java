@@ -183,13 +183,13 @@ public class PlayerBoardView extends View{
 
 
                 if(ships[i][j]==true) {
-                    canvas.drawRect(i*40, j*40, (i*40) + 38, (j*40) + 38, shipsPlacement);//65 so
+                    canvas.drawRect(i*20, j*20, (i*20) + 20, (j*20) + 20, shipsPlacement);//65 so
                 }
                 if(gameBoard.randomBoard[i][j] == true){
-                    canvas.drawRect(i*40, j*40, (i*40) + 38, (j*40) + 38, shotsTaken);
+                    canvas.drawRect(i*20, j*20, (i*20) + 20, (j*20) + 20, shotsTaken);
                 }
                 if(gameBoard.randomBoard[i][j] & ships[i][j] == true){
-                    canvas.drawRect(i*40, j*40, (i*40) + 38, (j*40) + 38, hitShip);
+                    canvas.drawRect(i*20, j*20, (i*20) + 20, (j*20) + 20, hitShip);
                     count++;
 
                     //gameBoard.hasHitBoard[i][j] = true;

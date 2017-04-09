@@ -201,7 +201,7 @@ public class BoardView extends View {
             for (int i=0;i<10;i++) {
                 for(int j=0;j<10;j++) {
                     if(hits[i][j]==true) {
-                        canvas.drawRect(i * 132, j * 132, (i * 132) + 128, (j * 132) + 128, hit);//65 so
+                        canvas.drawRect(i * 65, j * 65, (i * 65) + 65, (j * 65) + 65, hit);//65 so
                     }
                 }
             }

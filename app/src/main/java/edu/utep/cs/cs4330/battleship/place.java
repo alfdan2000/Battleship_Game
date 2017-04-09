@@ -183,7 +183,7 @@ public class place extends View {
             for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < 10; j++) {
                     if (shipPlacement[i][j] == true) {
-                        canvas.drawRect(i * 145, j * 145, (i * 145) + 140, (j * 145) + 140, hit);
+                        canvas.drawRect(i * 75, j * 75, (i * 75) + 75, (j * 75) + 75, hit);
                     }
                 }
             }

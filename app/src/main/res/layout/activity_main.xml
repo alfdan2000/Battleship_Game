@@ -8,46 +8,41 @@
     tools:context="edu.utep.cs.cs4330.battleship.MainActivity">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-
-        <Spinner
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/spinner"
-            android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown"/>
+            android:layout_height="match_parent">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:text="PLACE SHIPS"
+            <TextView
+                android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Welcome to the BattleShip game"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="56dp" />
 
-                android:id="@+id/place"
-                android:layout_weight="1" />
             <Button
-                android:text="Clear"
+                android:id="@+id/pvp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/comp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="61dp"
+                android:text="PVP" />
 
-                android:id="@+id/clear"
-                android:layout_weight="1" />
-        </LinearLayout>
-
-        <edu.utep.cs.cs4330.battleship.place
-            android:id="@+id/boardView"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"/>
+            <Button
+                android:id="@+id/comp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="159dp"
+                android:text="Play Computer" />
+        </RelativeLayout>
 
     </LinearLayout>
-
 </android.support.design.widget.CoordinatorLayout>

@@ -2,4 +2,6 @@
     <string name="app_name">Battleship</string>
     <string name="title_activity_game">game</string>
     <string name="title_activity_play">PlayActivity</string>
+    <string name="title_activity_place_your_ships">PlaceYourShips</string>
+    <string name="title_activity_pvp_type">PvpType</string>
 </resources>

@@ -9,10 +9,17 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
+
 //Thomas Payan and Alfred Cazares
 public class game extends AppCompatActivity {
 
@@ -24,6 +31,8 @@ public class game extends AppCompatActivity {
     int shot=0;//keeps track of the number of shots
     boolean [] shipsplace;//saves the players ships saved in bundle
     boolean [][] twoDShipsPlace= new boolean [10][10];//convert the players ships to 2-d array
+    private Socket socket;
+
 
 
     @Override
@@ -208,5 +217,69 @@ public class game extends AppCompatActivity {
     protected void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
+//////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+
+
+    /** Connect to the specified chat server. */
+    private void connectToServer(final String host, final int port) {
+        new Thread(new Runnable()  {
+            @Override
+            public void run() {
+                socket = createSocket(host, port);
+                if (socket != null) {
+                    //try {
+                    //readMessage();
+                    //} catch (IOException e) {
+                    //  e.printStackTrace();
+                    //}
+                    // WRITE YOUR CODE HERE ...
+                    //if(msgEdit.getText().toString()!= null) {
+                    //    sendMessage(msgEdit.getText().toString());
+                    //}
+                }
+
+            }
+
+            /*
+            handler.post(new Runnable() {
+            @Override
+            public void run(){
+            toast(socket != null ? "Connected." : "Failed to connect!11"));
+            }
+            });
+            */
+        }).start();
+
+    }
+
+    /** Creates a sock with the given host and port. */
+    private Socket createSocket(String host, int port) {
+        try {
+            return new Socket(host, port);
+        } catch (Exception e) {
+            Log.d("TAG---", e.toString());
+        }
+        return null;
+    }
+
+    /** Send the given message to the chat server. */
+    private void sendMessage(String msg) {
+        // WRITE YOUR CODE HERE ...
+
+        PrintWriter out = null;
+        try {
+            out = new PrintWriter(
+                    new OutputStreamWriter(socket.getOutputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        out.println(msg);
+        out.flush();
+        //displayMessage(msg);
+    }
 }
