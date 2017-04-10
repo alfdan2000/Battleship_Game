@@ -20,19 +20,19 @@ public class PvpType extends AppCompatActivity {
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(PvpType.this,PlaceYourShips.class);
-                    Bundle extras = new Bundle();
-                    boolean host = false;
-                    extras.putBoolean("isHost", host);
-                    i.putExtras(extras);
-                    startActivity(i);
+                Intent nIntent = new Intent(PvpType.this,PlaceYourShips.class);
+                    //Bundle extras = nIntent.getExtras();
+                    boolean client = true;
+                    nIntent.putExtra("isClient", client);
+                    //nIntent.putExtras(nBundle);
+                    startActivity(nIntent);
             }
         });
         host.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(PvpType.this,PlaceYourShips.class);
-                Bundle extras = new Bundle();
+                Bundle extras = i.getExtras();
                 boolean host = true;
                 extras.putBoolean("isHost", host);
                 i.putExtras(extras);

@@ -162,27 +162,27 @@ public class PlayerBoardView extends View{
 
 
     public void drawPlaces(Canvas canvas) {
-        //gameBoard.initialize();
-
-        //hits=board.board;
-        //for loop is used to redraw the places the ships are hit every time
-        for (int i=0;i<10;i++) {
-            for(int j=0;j<10;j++) {
-                /*if(ships[i][j]==true) {
-                    canvas.drawRect(i*40, j*40, (i*40) + 38, (j*40) + 38, shipsPlacement);//65 so
+        final float placeSize = lineGap(); /**This has the size of the gaps between the lines.*/
+        final float maxCoord = maxCoord(); /**This returns the size of the entire board.*/
+        for (int col=0;col<10;col++) {
+            for (int row = 0; row < 10; row++) {
+                float xy = col * placeSize;
+                float xz = row * placeSize;
+                if (ships[row][col] == true) {
+                    canvas.drawRect(xz, xy, xz + placeSize, xy + placeSize, shipsPlacement);
                 }
-                if(gameBoard.hasShotBoard[i][j] == true){
-                    canvas.drawRect(i*40, j*40, (i*40) + 38, (j*40) + 38, shotsTaken);
+                if (gameBoard.randomBoard[row][col] == true) {
+                    canvas.drawRect(xz, xy, xz + placeSize, xy + placeSize, shotsTaken);
                 }
-                if(gameBoard.hasShotBoard[i][j] & ships[i][j] == true){
-                    canvas.drawRect(i*40, j*40, (i*40) + 38, (j*40) + 38, hitShip);
+                if (gameBoard.randomBoard[row][col] & ships[row][col] == true) {
+                    canvas.drawRect(xz, xy, xz + placeSize, xy + placeSize, hitShip);
                     count++;
-                    gameBoard.hasHitBoard[i][j] = true;
-                    }*/
-                MainActivity mainActivity;
+                }
 
 
-                if(ships[i][j]==true) {
+
+
+                /*if(ships[i][j]==true) {
                     canvas.drawRect(i*20, j*20, (i*20) + 20, (j*20) + 20, shipsPlacement);//65 so
                 }
                 if(gameBoard.randomBoard[i][j] == true){
@@ -193,7 +193,7 @@ public class PlayerBoardView extends View{
                     count++;
 
                     //gameBoard.hasHitBoard[i][j] = true;
-                }
+                }*/
 
 
 

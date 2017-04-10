@@ -31,21 +31,22 @@ public class MainActivity extends AppCompatActivity  {
         pvp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 Intent i = new Intent(MainActivity.this,PvpType.class);
-
-                startActivity(i);
-
+                boolean internet=true;
+                Bundle extras = new Bundle();
+                extras.putBoolean("isInternet", internet);
+                i.putExtras(extras);
             }
         });
         comp.setOnClickListener(new View.OnClickListener() {//resets board
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this,PlaceYourShips.class);
-
+                boolean internet=false;
+                Bundle extras = new Bundle();
+                extras.putBoolean("isInternet", internet);
+                i.putExtras(extras);
                 startActivity(i);
-
             }
         });
 

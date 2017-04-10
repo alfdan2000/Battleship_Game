@@ -180,13 +180,24 @@ public class place extends View {
         }
 
         //this just prints all placed every touch
-            for (int i = 0; i < 10; i++) {
+        final float placeSize = lineGap(); /**This has the size of the gaps between the lines.*/
+        final float maxCoord = maxCoord(); /**This returns the size of the entire board.*/
+        for (int col=0;col<10;col++) {
+            for (int row = 0; row < 10; row++) {
+                float xy = col * placeSize;
+                float xz = row * placeSize;
+                if (shipPlacement[row][col] == true) {
+                    canvas.drawRect(xz, xy, xz + placeSize, xy + placeSize, hit);
+                }
+            }
+        }
+           /* for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < 10; j++) {
                     if (shipPlacement[i][j] == true) {
                         canvas.drawRect(i * 75, j * 75, (i * 75) + 75, (j * 75) + 75, hit);
                     }
                 }
-            }
+            }*/
 
               //  }
             //}

@@ -16,18 +16,24 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 public class PlaceYourShips extends AppCompatActivity {
-    private static String LOCAL_HOST ="192.168.1.71";//put your ip address
+    private static String LOCAL_HOST ="10.0.2.2";//put your ip address
     //private static String LOCAL_HOST = "opuntia.cs.utep.edu";
     private static final String CHAT_SERVER = LOCAL_HOST;
     private static final int PORT_NUMBER = 8000;
     private Socket socket;
+    private ServerSocket serverSocket;
     private Handler handler;
+    boolean isHost = false;
+    boolean isClient = false;
 
 
 
@@ -51,8 +57,17 @@ public class PlaceYourShips extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        if(intent != null){
+            isClient = intent.getBooleanExtra("isClient",false);
+            toast("isCLient is " + isClient);
+            isHost = intent.getBooleanExtra("isHost",false);
+            toast(" isHost is " + isHost);
+        }else{
+            toast("savedInstanceState is null");
+        }
         setContentView(R.layout.activity_place_your_ships);
-        final Button newGame = (Button) findViewById(R.id.place);//button to complete the placement of ships
+        final Button placeShips = (Button) findViewById(R.id.place);//button to complete the placement of ships
         final Button clear=(Button) findViewById(R.id.clear);//clear board button
         board = new Board(10);
         //conn=new conn();
@@ -61,9 +76,14 @@ public class PlaceYourShips extends AppCompatActivity {
         boardView.setBoard(board);//agian boardView variable is object place
 
         handler = new Handler();
-        connectToServer(CHAT_SERVER, PORT_NUMBER);
+        if(isClient) {
+            connectToServer(CHAT_SERVER, PORT_NUMBER);
+            if(socket==null)toast("cant connect");
+        }else{
+            createServer();
+        }
 
-        if(socket==null)toast("cant connect");
+
 
         frigateSelected=false;
         subSelected=false;
@@ -136,7 +156,7 @@ public class PlaceYourShips extends AppCompatActivity {
         });
 
 
-        newGame.setOnClickListener(new View.OnClickListener() {
+        placeShips.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -186,7 +206,7 @@ public class PlaceYourShips extends AppCompatActivity {
             public void onTouch(int x, int y) {
                 //player.invalidate();
                 //connectToServer(LOCAL_HOST,PORT_NUMBER);
-                sendMessage("placed");
+                //sendMessage("placed");
                 toast(String.format("Touched: %d, %d", x, y));
             }
         });
@@ -224,6 +244,8 @@ public class PlaceYourShips extends AppCompatActivity {
         battleSelected=savedInstanceState.getBoolean("isbat");
         carrierSelected=savedInstanceState.getBoolean("iscarr");
         boardView.checkers=savedInstanceState.getInt("checkers");
+        isHost = savedInstanceState.getBoolean("isHost");
+        isClient = savedInstanceState.getBoolean("isClient");
     }
 
     public boolean [] doubleToSingleArray(boolean [][] old){
@@ -275,57 +297,49 @@ public class PlaceYourShips extends AppCompatActivity {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
     /** Connect to the specified chat server. */
+    private void createServer(){
+        new Thread(new Runnable()  {
+            @Override
+            public void run() {
+                try {
+                    serverSocket = new ServerSocket(PORT_NUMBER);
+                    for(;;){//searches for connection
+                        Socket socket1= serverSocket.accept();//accepts client
+                        socket=socket1;//store it to global to use in other methods
+                        if (socket1 != null) {
+                            try {
+                                readMessage(socket1);//receves messages from client
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }).start();
+
+    }
     private void connectToServer(final String host, final int port) {
         new Thread(new Runnable()  {
             @Override
             public void run() {
                 socket = createSocket(host, port);
                 if (socket != null) {
-                    //try {
-                    //readMessage();
-                    //} catch (IOException e) {
-                    //  e.printStackTrace();
-                    //}
-                    // WRITE YOUR CODE HERE ...
-                    //if(msgEdit.getText().toString()!= null) {
-                    //    sendMessage(msgEdit.getText().toString());
-                    //}
+                    try {
+                        readMessage(socket);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-
-
             }
-
-            /*
-            handler.post(new Runnable() {
-            @Override
-            public void run(){
-            toast(socket != null ? "Connected." : "Failed to connect!11"));
-            }
-            });
-            */
         }).start();
-        /*
-        new Thread(() -> {
-            socket = createSocket(host, port);
-            if (socket != null) {
-                try {
-                    readMessage();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                // WRITE YOUR CODE HERE ...
-                //if(msgEdit.getText().toString()!= null) {
-                //    sendMessage(msgEdit.getText().toString());
-                //}
-            }
-
-            handler.post(() -> showToast(socket != null ? "Connected." : "Failed to connect!11"));
-        }).start();
-        */
     }
 
-    /** Creates a sock with the given host and port. */
     private Socket createSocket(String host, int port) {
         try {
             return new Socket(host, port);
@@ -335,10 +349,7 @@ public class PlaceYourShips extends AppCompatActivity {
         return null;
     }
 
-    /** Send the given message to the chat server. */
     private void sendMessage(String msg) {
-        // WRITE YOUR CODE HERE ...
-
         PrintWriter out = null;
         try {
             out = new PrintWriter(
@@ -349,7 +360,26 @@ public class PlaceYourShips extends AppCompatActivity {
 
         out.println(msg);
         out.flush();
-        //displayMessage(msg);
+    }
+    //method to read opp msg
+    private void readMessage(Socket socket) throws IOException{
+        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+        while(true) {
+            final String x = in.readLine();//x cord
+            final String y = in.readLine();//y cord
+
+            if (x == null&&y==null) {
+                break;
+            } else{
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        toast("opp touched x,y:"+x+","+y);
+                    }
+                });
+            }
+        }
     }
 
 }

@@ -197,14 +197,26 @@ public class BoardView extends View {
         hits=board.placehit();
             playerTurn = 1;
 
-            //for loop is used to redraw the places the ships are hit everytime
+        final float placeSize = lineGap(); /**This has the size of the gaps between the lines.*/
+        final float maxCoord = maxCoord(); /**This returns the size of the entire board.*/
+        for (int col=0;col<10;col++) {
+            for (int row = 0; row < 10; row++) {
+                float xy = col * placeSize;
+                float xz = row * placeSize;
+                if (hits[row][col] == true) {
+                    canvas.drawRect(xz, xy, xz + placeSize, xy + placeSize, hit);
+                }
+            }
+        }
+
+          /*  //for loop is used to redraw the places the ships are hit everytime
             for (int i=0;i<10;i++) {
                 for(int j=0;j<10;j++) {
                     if(hits[i][j]==true) {
                         canvas.drawRect(i * 65, j * 65, (i * 65) + 65, (j * 65) + 65, hit);//65 so
                     }
                 }
-            }
+            }*/
         if(prevx!=x&&prevy!=y) {
 
             playerTurn = 1;
