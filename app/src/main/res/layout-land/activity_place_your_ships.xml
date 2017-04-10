@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="edu.utep.cs.cs4330.battleship.PlaceYourShips">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/spinner"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown"/>
+
+            <Button
+                android:text="Clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:id="@+id/clear"
+                android:layout_weight="1" />
+
+            <Button
+                android:text="PLACE SHIPS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:id="@+id/place"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <edu.utep.cs.cs4330.battleship.place
+            android:id="@+id/boardView"
+            android:layout_width="350dp"
+            android:layout_height="350dp"
+            android:layout_marginTop="10dp"/>
+    </LinearLayout>
+
+
+
+</android.support.design.widget.CoordinatorLayout>
