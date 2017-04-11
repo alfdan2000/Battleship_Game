@@ -29,9 +29,14 @@ public class game extends AppCompatActivity {
     public static PlayerBoardView playerBoard;//board view for player
     private final Paint ya=new Paint(Paint.ANTI_ALIAS_FLAG);;
     int shot=0;//keeps track of the number of shots
-    boolean [] shipsplace;//saves the players ships saved in bundle
+    boolean [] shipsplace;//saves the players ships saved in bundle\
+    public static boolean [] oppShipsPlace;
+    public static boolean [][] twoDOppShipsPlace=new boolean[10][10];
     boolean [][] twoDShipsPlace= new boolean [10][10];//convert the players ships to 2-d array
     private Socket socket;
+    public static boolean internet=false;
+    boolean isHost=false;
+    boolean isClient=false;
 
 
 
@@ -46,20 +51,17 @@ public class game extends AppCompatActivity {
         board = new GameBoard(10);
         secondBoard= new Board(10);
 
-        //this is for comp
-        boardView = (BoardView) findViewById(R.id.boardView);
-        boardView.setBoard(board);
-
-        //this is for player
-        playerBoard=(PlayerBoardView) findViewById(R.id.boardView2);
-        playerBoard.setBoard(secondBoard);
-
-        ya.setColor(Color.WHITE);
-
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             shipsplace= extras.getBooleanArray("playerShips");//saves to 1-d array
+            internet= extras.getBoolean("internet");
+            isHost= extras.getBoolean("isHost");
+            isClient= extras.getBoolean("isClient");
+            if(internet){
+                oppShipsPlace=extras.getBooleanArray("oppShips");
+                twoDOppShipsPlace=singleToDoubleArray(oppShipsPlace);
+            }
 
             for(int r=0;r<10;r++){
                 for(int c=0;c<10;c++){
@@ -77,6 +79,20 @@ public class game extends AppCompatActivity {
             }
 
         }
+
+
+        //this is for comp
+        boardView = (BoardView) findViewById(R.id.boardView);
+        boardView.setBoard(board);
+
+        //this is for player
+        playerBoard=(PlayerBoardView) findViewById(R.id.boardView2);
+        playerBoard.setBoard(secondBoard);
+
+        ya.setColor(Color.WHITE);
+
+
+
 
 
         //when select new game

@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity  {
                 Bundle extras = new Bundle();
                 extras.putBoolean("isInternet", internet);
                 i.putExtras(extras);
+                startActivity(i);
             }
         });
         comp.setOnClickListener(new View.OnClickListener() {//resets board

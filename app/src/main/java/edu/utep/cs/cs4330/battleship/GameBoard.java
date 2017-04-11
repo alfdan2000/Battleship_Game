@@ -55,8 +55,11 @@ public class GameBoard {
                 this.board[col][row]=false;
             }
         }
-        placeRandom();
-
+       // if(game.internet==false) {
+            placeRandom();
+        //}else{
+            //this.board=game.twoDOppShipsPlace;
+       // }
     }
     private void placeRandom(){
         int row,col,position;

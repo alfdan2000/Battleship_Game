@@ -25,7 +25,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class PlaceYourShips extends AppCompatActivity {
-    private static String LOCAL_HOST ="10.0.2.2";//put your ip address
+    private static String LOCAL_HOST ="192.168.1.89";//put your ip address
     //private static String LOCAL_HOST = "opuntia.cs.utep.edu";
     private static final String CHAT_SERVER = LOCAL_HOST;
     private static final int PORT_NUMBER = 8000;
@@ -34,6 +34,8 @@ public class PlaceYourShips extends AppCompatActivity {
     private Handler handler;
     boolean isHost = false;
     boolean isClient = false;
+    boolean internet=false;
+    boolean [][] oppShips=new boolean[10][10];
 
 
 
@@ -57,15 +59,19 @@ public class PlaceYourShips extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Intent intent = getIntent();
         if(intent != null){
             isClient = intent.getBooleanExtra("isClient",false);
             toast("isCLient is " + isClient);
             isHost = intent.getBooleanExtra("isHost",false);
             toast(" isHost is " + isHost);
+            internet = intent.getBooleanExtra("internet",false);
+
         }else{
             toast("savedInstanceState is null");
         }
+
         setContentView(R.layout.activity_place_your_ships);
         final Button placeShips = (Button) findViewById(R.id.place);//button to complete the placement of ships
         final Button clear=(Button) findViewById(R.id.clear);//clear board button
@@ -74,11 +80,28 @@ public class PlaceYourShips extends AppCompatActivity {
         boardView = (place) findViewById(R.id.boardView);//its labeled boardView in the layout id but is object place
         player = (PlayerBoardView) findViewById(R.id.boardView2);
         boardView.setBoard(board);//agian boardView variable is object place
+        /*
+       // Boolean isHost=false;
+        Bundle extras = getIntent().getExtras();
+
+        //////////////////possible if to see if pvp///////////////////////////////
+        if (extras != null) {
+            isHost= extras.getBoolean("isHost");//saves to 1-d array
+        }
+        handler = new Handler();
+
+        if(!isHost) {
+            connectToServer(CHAT_SERVER, PORT_NUMBER);
+        } else{
+            createServer();
+        }
+        ///////////////possible end if///////////////////
+        */
 
         handler = new Handler();
         if(isClient) {
             connectToServer(CHAT_SERVER, PORT_NUMBER);
-            if(socket==null)toast("cant connect");
+           // if(socket==null)toast("cant connect");
         }else{
             createServer();
         }
@@ -173,7 +196,13 @@ public class PlaceYourShips extends AppCompatActivity {
                             counting++;
                         }
                     }
+                    boolean [] newOppShips=doubleToSingleArray(oppShips);
+                    extras.putBooleanArray("oppShips",newOppShips);
                     extras.putBooleanArray("playerShips", newShipPlacement);
+                    extras.putBoolean("internet", internet);
+                    extras.putBoolean("isHost", isHost);
+                    extras.putBoolean("isClient", isClient);
+
                     i.putExtras(extras);
                     startActivity(i);
                 }else{
@@ -204,10 +233,10 @@ public class PlaceYourShips extends AppCompatActivity {
         boardView.addBoardTouchListener(new place.BoardTouchListener() {
             @Override
             public void onTouch(int x, int y) {
-                //player.invalidate();
-                //connectToServer(LOCAL_HOST,PORT_NUMBER);
-                //sendMessage("placed");
-                toast(String.format("Touched: %d, %d", x, y));
+                int x2=x;
+                int y2=y;
+                sendMessage(Integer.toString(x2));
+                sendMessage(Integer.toString(y2));
             }
         });
 
@@ -368,6 +397,10 @@ public class PlaceYourShips extends AppCompatActivity {
         while(true) {
             final String x = in.readLine();//x cord
             final String y = in.readLine();//y cord
+            int xcord=Integer.parseInt(x);
+            int ycord=Integer.parseInt(y);
+            oppShips[xcord][ycord]=true;
+
 
             if (x == null&&y==null) {
                 break;
@@ -381,5 +414,6 @@ public class PlaceYourShips extends AppCompatActivity {
             }
         }
     }
+
 
 }

@@ -21,9 +21,18 @@ public class PvpType extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent nIntent = new Intent(PvpType.this,PlaceYourShips.class);
+                Bundle extras = getIntent().getExtras();
+                boolean internet=false;
+                if (extras != null) {
+                     internet = extras.getBoolean("isInternet");
+                }
+
                     //Bundle extras = nIntent.getExtras();
                     boolean client = true;
                     nIntent.putExtra("isClient", client);
+                nIntent.putExtra("isHost", false);
+
+                nIntent.putExtra("internet",internet);
                     //nIntent.putExtras(nBundle);
                     startActivity(nIntent);
             }
@@ -32,9 +41,16 @@ public class PvpType extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(PvpType.this,PlaceYourShips.class);
-                Bundle extras = i.getExtras();
+                Bundle extras = getIntent().getExtras();
+                boolean  internet=false;
+                if (extras != null) {
+                    internet = extras.getBoolean("isInternet");
+                }
                 boolean host = true;
                 extras.putBoolean("isHost", host);
+                extras.putBoolean("isClient",false);
+                extras.putBoolean("internet", internet);
+
                 i.putExtras(extras);
                 startActivity(i);
             }
