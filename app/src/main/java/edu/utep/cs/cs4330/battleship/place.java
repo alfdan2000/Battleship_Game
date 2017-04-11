@@ -173,6 +173,9 @@ public class place extends View {
                 if (shipPlacement[newx][newy] == false)
                     checkers--;//subtract from checkers and place after
                 shipPlacement[newx][newy] = true;
+                if(PlaceYourShips.internet==true) {
+
+                }
             }
         }
         if(firstTouch==false) {

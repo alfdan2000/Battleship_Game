@@ -25,7 +25,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class PlaceYourShips extends AppCompatActivity {
-    private static String LOCAL_HOST ="192.168.1.89";//put your ip address
+    private static String LOCAL_HOST ="172.19.156.174";//put your ip address
     //private static String LOCAL_HOST = "opuntia.cs.utep.edu";
     private static final String CHAT_SERVER = LOCAL_HOST;
     private static final int PORT_NUMBER = 8000;
@@ -34,7 +34,7 @@ public class PlaceYourShips extends AppCompatActivity {
     private Handler handler;
     boolean isHost = false;
     boolean isClient = false;
-    boolean internet=false;
+    public static boolean internet=false;
     boolean [][] oppShips=new boolean[10][10];
 
 
@@ -97,15 +97,15 @@ public class PlaceYourShips extends AppCompatActivity {
         }
         ///////////////possible end if///////////////////
         */
-
-        handler = new Handler();
-        if(isClient) {
-            connectToServer(CHAT_SERVER, PORT_NUMBER);
-           // if(socket==null)toast("cant connect");
-        }else{
-            createServer();
+        if(internet==true) {
+            handler = new Handler();
+            if (isClient) {
+                connectToServer(CHAT_SERVER, PORT_NUMBER);
+                // if(socket==null)toast("cant connect");
+            } else {
+                createServer();
+            }
         }
-
 
 
         frigateSelected=false;
@@ -233,10 +233,12 @@ public class PlaceYourShips extends AppCompatActivity {
         boardView.addBoardTouchListener(new place.BoardTouchListener() {
             @Override
             public void onTouch(int x, int y) {
-                int x2=x;
-                int y2=y;
-                sendMessage(Integer.toString(x2));
-                sendMessage(Integer.toString(y2));
+                if(internet==true) {
+                    int x2 = x;
+                    int y2 = y;
+                    sendMessage(Integer.toString(x2));
+                    sendMessage(Integer.toString(y2));
+                }
             }
         });
 
@@ -412,6 +414,14 @@ public class PlaceYourShips extends AppCompatActivity {
                     }
                 });
             }
+        }
+    }
+    public void sendToRequest(int x,int y){
+        if(internet==true) {
+            int x2 = x;
+            int y2 = y;
+            sendMessage(Integer.toString(x2));
+            sendMessage(Integer.toString(y2));
         }
     }
 

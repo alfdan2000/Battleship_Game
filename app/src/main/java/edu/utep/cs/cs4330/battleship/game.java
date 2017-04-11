@@ -74,9 +74,11 @@ public class game extends AppCompatActivity {
             for(int a=0;a<=9;a++){
                 for(int b=0;b<=9;b++){
                     if(playerBoard.ships[a][b]== true)
+
                         secondBoard.health++;
                 }
             }
+
 
         }
 
@@ -84,6 +86,9 @@ public class game extends AppCompatActivity {
         //this is for comp
         boardView = (BoardView) findViewById(R.id.boardView);
         boardView.setBoard(board);
+        if(internet==true){
+            board.board=twoDOppShipsPlace;
+        }
 
         //this is for player
         playerBoard=(PlayerBoardView) findViewById(R.id.boardView2);
