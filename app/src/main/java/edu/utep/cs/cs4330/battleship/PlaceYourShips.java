@@ -97,15 +97,7 @@ public class PlaceYourShips extends AppCompatActivity {
         }
         ///////////////possible end if///////////////////
         */
-        if(internet==true) {
-            handler = new Handler();
-            if (isClient) {
-                connectToServer(CHAT_SERVER, PORT_NUMBER);
-                // if(socket==null)toast("cant connect");
-            } else {
-                createServer();
-            }
-        }
+
 
 
         frigateSelected=false;
@@ -235,8 +227,8 @@ public class PlaceYourShips extends AppCompatActivity {
                 if(internet==true) {
                     int x2 = x;
                     int y2 = y;
-                    sendMessage(Integer.toString(x2));
-                    sendMessage(Integer.toString(y2));
+                    //sendMessage(Integer.toString(x2));
+                    //sendMessage(Integer.toString(y2));
                 }
             }
         });
@@ -328,101 +320,6 @@ public class PlaceYourShips extends AppCompatActivity {
     }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /** Connect to the specified chat server. */
-    private void createServer(){
-        new Thread(new Runnable()  {
-            @Override
-            public void run() {
-                try {
-                    serverSocket = new ServerSocket(PORT_NUMBER);
-                    for(;;){//searches for connection
-                        Socket socket1= serverSocket.accept();//accepts client
-                        socket=socket1;//store it to global to use in other methods
-                        if (socket1 != null) {
-                            try {
-                                readMessage(socket1);//receves messages from client
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }).start();
-
-    }
-    private void connectToServer(final String host, final int port) {
-        new Thread(new Runnable()  {
-            @Override
-            public void run() {
-                socket = createSocket(host, port);
-                if (socket != null) {
-                    try {
-                        readMessage(socket);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
-    }
-
-    private Socket createSocket(String host, int port) {
-        try {
-            return new Socket(host, port);
-        } catch (Exception e) {
-            Log.d("TAG---", e.toString());
-        }
-        return null;
-    }
-
-    private void sendMessage(String msg) {
-        PrintWriter out = null;
-        try {
-            out = new PrintWriter(
-                    new OutputStreamWriter(socket.getOutputStream()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        out.println(msg);
-        out.flush();
-    }
-    //method to read opp msg
-    private void readMessage(Socket socket) throws IOException{
-        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-        while(true) {
-            final String x = in.readLine();//x cord
-            final String y = in.readLine();//y cord
-            int xcord=Integer.parseInt(x);
-            int ycord=Integer.parseInt(y);
-            oppShips[xcord][ycord]=true;
-
-
-            if (x == null&&y==null) {
-                break;
-            } else{
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        toast("opp touched x,y:"+x+","+y);
-                    }
-                });
-            }
-        }
-    }
-    public void sendToRequest(int x,int y){
-        if(internet==true) {
-            int x2 = x;
-            int y2 = y;
-            sendMessage(Integer.toString(x2));
-            sendMessage(Integer.toString(y2));
-        }
-    }
 
 
 }

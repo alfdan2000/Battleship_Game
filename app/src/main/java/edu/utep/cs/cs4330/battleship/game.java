@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,9 +16,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 //Thomas Payan and Alfred Cazares
@@ -33,16 +37,33 @@ public class game extends AppCompatActivity {
     public static boolean [] oppShipsPlace;
     public static boolean [][] twoDOppShipsPlace=new boolean[10][10];
     boolean [][] twoDShipsPlace= new boolean [10][10];//convert the players ships to 2-d array
-    private Socket socket;
     public static boolean internet=false;
     boolean isHost=false;
     boolean isClient=false;
+    Handler handler;
+    private static String LOCAL_HOST ="172.19.159.1";//put your ip address
+    //private static String LOCAL_HOST = "opuntia.cs.utep.edu";
+    private static final String CHAT_SERVER = LOCAL_HOST;
+    private static final int PORT_NUMBER = 8000;
+    private Socket socket;
+    private ServerSocket serverSocket;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        if(intent != null){
+            isClient = intent.getBooleanExtra("isClient",false);
+            toast("isCLient is " + isClient);
+            isHost = intent.getBooleanExtra("isHost",false);
+            toast(" isHost is " + isHost);
+            internet = intent.getBooleanExtra("internet",false);
+
+        }else{
+            toast("savedInstanceState is null");
+        }
         setContentView(R.layout.activity_game);
         final TextView label2 = (TextView) findViewById(R.id.s);
         final Button newGame = (Button) findViewById(R.id.newButton);
@@ -80,6 +101,15 @@ public class game extends AppCompatActivity {
             }
 
 
+        }
+        if(internet==true) {
+            handler = new Handler();
+            if (isClient) {
+                connectToServer(CHAT_SERVER, PORT_NUMBER);
+                // if(socket==null)toast("cant connect");
+            } else {
+                createServer();
+            }
         }
 
 
@@ -135,6 +165,12 @@ public class game extends AppCompatActivity {
                 label.setText("Number of Shots: "+shot);
                 boardView.playerTurn = 1;
                 player.setText("Player " + boardView.playerTurn +"'s turn");
+                if(internet==true) {
+                    int x2 = x;
+                    int y2 = y;
+                    sendMessage(Integer.toString(x2));
+                    sendMessage(Integer.toString(y2));
+                }
                 toast(String.format("Touched: %d, %d", x, y));
             }
         });
@@ -241,43 +277,48 @@ public class game extends AppCompatActivity {
 //////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
     /** Connect to the specified chat server. */
+    private void createServer(){
+        new Thread(new Runnable()  {
+            @Override
+            public void run() {
+                try {
+                    serverSocket = new ServerSocket(PORT_NUMBER);
+                    for(;;){//searches for connection
+                        Socket socket1= serverSocket.accept();//accepts client
+                        socket=socket1;//store it to global to use in other methods
+                        if (socket1 != null) {
+                            try {
+                                readMessage(socket1);//receves messages from client
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }).start();
+
+    }
     private void connectToServer(final String host, final int port) {
         new Thread(new Runnable()  {
             @Override
             public void run() {
                 socket = createSocket(host, port);
                 if (socket != null) {
-                    //try {
-                    //readMessage();
-                    //} catch (IOException e) {
-                    //  e.printStackTrace();
-                    //}
-                    // WRITE YOUR CODE HERE ...
-                    //if(msgEdit.getText().toString()!= null) {
-                    //    sendMessage(msgEdit.getText().toString());
-                    //}
+                    try {
+                        readMessage(socket);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-
             }
-
-            /*
-            handler.post(new Runnable() {
-            @Override
-            public void run(){
-            toast(socket != null ? "Connected." : "Failed to connect!11"));
-            }
-            });
-            */
         }).start();
-
     }
 
-    /** Creates a sock with the given host and port. */
     private Socket createSocket(String host, int port) {
         try {
             return new Socket(host, port);
@@ -287,10 +328,7 @@ public class game extends AppCompatActivity {
         return null;
     }
 
-    /** Send the given message to the chat server. */
     private void sendMessage(String msg) {
-        // WRITE YOUR CODE HERE ...
-
         PrintWriter out = null;
         try {
             out = new PrintWriter(
@@ -301,6 +339,37 @@ public class game extends AppCompatActivity {
 
         out.println(msg);
         out.flush();
-        //displayMessage(msg);
+    }
+    //method to read opp msg
+    private void readMessage(Socket socket) throws IOException{
+        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+        while(true) {
+            final String x = in.readLine();//x cord
+            final String y = in.readLine();//y cord
+            int xcord=Integer.parseInt(x);
+            int ycord=Integer.parseInt(y);
+            //oppShips[xcord][ycord]=true;
+
+
+            if (x == null&&y==null) {
+                break;
+            } else{
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        toast("opp touched x,y:"+x+","+y);
+                    }
+                });
+            }
+        }
+    }
+    public void sendToRequest(int x,int y){
+        if(internet==true) {
+            int x2 = x;
+            int y2 = y;
+            sendMessage(Integer.toString(x2));
+            sendMessage(Integer.toString(y2));
+        }
     }
 }
