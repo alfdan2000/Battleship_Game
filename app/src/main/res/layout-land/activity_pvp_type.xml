@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="edu.utep.cs.cs4330.battleship.PvpType">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/host"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Host Game"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="43dp" />
+
+        <Button
+            android:id="@+id/join"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/host"
+            android:layout_alignParentTop="true"
+            android:layout_alignStart="@+id/host"
+            android:layout_marginTop="168dp"
+            android:text="Join Game" />
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
