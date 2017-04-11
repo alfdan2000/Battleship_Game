@@ -226,7 +226,6 @@ public class PlaceYourShips extends AppCompatActivity {
                     }
                 }
                 boardView.invalidate();
-
             }
         });
 

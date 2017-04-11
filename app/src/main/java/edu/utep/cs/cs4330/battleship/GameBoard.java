@@ -13,7 +13,6 @@ public class GameBoard {
      * Size of this board. This board has
      * <code>size*size </code> places.
      */
-
     private final int size;
     //static Boolean[] ships = new Boolean[5]; // Added new for random ships
     //static Boolean[][]shipBoard;   // added new for random ships

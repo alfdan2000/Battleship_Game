@@ -181,7 +181,6 @@ public class PlayerBoardView extends View{
 
 
 
-
                 /*if(ships[i][j]==true) {
                     canvas.drawRect(i*20, j*20, (i*20) + 20, (j*20) + 20, shipsPlacement);//65 so
                 }
