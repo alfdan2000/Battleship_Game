@@ -47,6 +47,9 @@ public class game extends AppCompatActivity {
     private static final int PORT_NUMBER = 8000;
     private Socket socket;
     private ServerSocket serverSocket;
+    public static int sentX;
+    public static int sentY;
+    public static boolean [][] yourShipLocation=new boolean[10][10];
 
 
 
@@ -94,11 +97,13 @@ public class game extends AppCompatActivity {
             playerBoard.ships=twoDShipsPlace;//give value to playerBoardView
             for(int a=0;a<=9;a++){
                 for(int b=0;b<=9;b++){
-                    if(playerBoard.ships[a][b]== true)
-
+                    if(playerBoard.ships[a][b]== true) {
                         secondBoard.health++;
+                        yourShipLocation[a][b]=true;
+                    }
                 }
             }
+            //toast("number of ship places: "+Integer.toString(secondBoard.health));
 
 
         }
@@ -116,9 +121,7 @@ public class game extends AppCompatActivity {
         //this is for comp
         boardView = (BoardView) findViewById(R.id.boardView);
         boardView.setBoard(board);
-        if(internet==true){
-            board.board=twoDOppShipsPlace;
-        }
+
 
         //this is for player
         playerBoard=(PlayerBoardView) findViewById(R.id.boardView2);
@@ -166,10 +169,9 @@ public class game extends AppCompatActivity {
                 boardView.playerTurn = 1;
                 player.setText("Player " + boardView.playerTurn +"'s turn");
                 if(internet==true) {
-                    int x2 = x;
-                    int y2 = y;
-                    sendMessage(Integer.toString(x2));
-                    sendMessage(Integer.toString(y2));
+                    sentX = x;//saved to vars in order to use when receives hit or miss
+                    sentY = y;
+                    sendToRequest(sentX,sentY);
                 }
                 toast(String.format("Touched: %d, %d", x, y));
             }
@@ -191,9 +193,10 @@ public class game extends AppCompatActivity {
         outState.putBooleanArray("bvHits",newBoardViewHits);
         outState.putBooleanArray("secondBoardHits",newSecondBoardHits);
         outState.putBooleanArray("secondBoardBoard",newSecondBoardBoard);
+        //outState.putSerializable("socket",socket);
+        outState.putBoolean("internet",internet);
         outState.putInt("oppHealth",board.health);
         outState.putInt("plyrHealth",secondBoard.health);
-
         outState.putInt("playerTurn",boardView.playerTurn);
         super.onSaveInstanceState(outState);
 
@@ -218,8 +221,10 @@ public class game extends AppCompatActivity {
         boardView.hits=singleToDoubleArray(restoreBoardViewHits);
         board.health=savedInstanceState.getInt("oppHealth");
         secondBoard.health=savedInstanceState.getInt("plyrHealth");
+        internet=savedInstanceState.getBoolean("internet");
         secondBoard.hits=singleToDoubleArray(restoreSecondBoardHits);
         secondBoard.board=singleToDoubleArray(restoreSecondBoardBoard);
+
         final TextView label2= (TextView) findViewById(R.id.s);
         label2.setText("cmp hp:" + board.health+",plyr hp:"+secondBoard.health);
         player2.setText("Player " + savedPlayerTurn +"'s turn");
@@ -328,6 +333,8 @@ public class game extends AppCompatActivity {
         return null;
     }
 
+
+    //used to send boolean
     private void sendMessage(String msg) {
         PrintWriter out = null;
         try {
@@ -345,31 +352,65 @@ public class game extends AppCompatActivity {
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
         while(true) {
-            final String x = in.readLine();//x cord
-            final String y = in.readLine();//y cord
-            int xcord=Integer.parseInt(x);
-            int ycord=Integer.parseInt(y);
-            //oppShips[xcord][ycord]=true;
+            final String msg=in.readLine();
 
-
-            if (x == null&&y==null) {
-                break;
-            } else{
+            if(msg.equals("miss")){
+                //do miss stuff
+                //must remember to save what you sent do miss stuff with those coordinates
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        toast("opp touched x,y:"+x+","+y);
+                        toast("miss");
                     }
                 });
+
+            }else if(msg.equals("hit")){
+                //do hit stuff
+                //must remember to save what you sent to do hit stuff with those coordinates
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        ///can be used to update health but may need to update textview can follow format of action listner update
+                        //board.health--;
+                        toast("hit");
+                    }
+                });
+
+            }else {//else the message recieved was coordinates
+                String [] cordinates=msg.split(",");
+                int xcord = Integer.parseInt(cordinates[0]); // cordinates to use for cheching your own board
+                int ycord = Integer.parseInt(cordinates[1]);
+                if(yourShipLocation[xcord][ycord]==true){
+                    //secondBoard.health--; //can be used to update health but may need to update textview
+                    sendMessage("hit");
+                }
+                else{
+                    sendMessage("miss");
+                }
+
+                if (msg == null) {
+                    break;
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            toast("opp touched x,y:" + msg);
+                        }
+                    });
+
+                }
             }
         }
     }
+    //use when sending coordinates
     public void sendToRequest(int x,int y){
         if(internet==true) {
             int x2 = x;
             int y2 = y;
-            sendMessage(Integer.toString(x2));
-            sendMessage(Integer.toString(y2));
+            String msg=Integer.toString(x2)+","+Integer.toString(y2);
+            sendMessage(msg);
+            //sendMessage(Integer.toString(y2));
         }
     }
 }

@@ -217,22 +217,23 @@ public class BoardView extends View {
                     }
                 }
             }*/
-        if(prevx!=x&&prevy!=y) {
+          if(!game.internet) {
+              if (prevx != x && prevy != y) {
 
-            playerTurn = 1;
-            board.computerRandom();
-            //board.computerShot();
-            game.playerBoard.invalidate();
-            prevx = x;
-            prevy = y;
-            for (int l=0;l<10;l++) {
-                for(int m=0;m<10;m++) {
+                  playerTurn = 1;
+                  board.computerRandom();
+                  //board.computerShot();
+                  game.playerBoard.invalidate();
+                  prevx = x;
+                  prevy = y;
+                  for (int l = 0; l < 10; l++) {
+                      for (int m = 0; m < 10; m++) {
 
-                }
-                }
+                      }
+                  }
 
-        }
-
+              }
+          }
 
     }
 
