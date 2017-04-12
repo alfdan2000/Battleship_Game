@@ -41,10 +41,10 @@ public class game extends AppCompatActivity {
     boolean isHost=false;
     boolean isClient=false;
     Handler handler;
-    private static String LOCAL_HOST ="172.19.159.1";//put your ip address
+    private static String LOCAL_HOST ="10.0.2.2";//put your ip address
     //private static String LOCAL_HOST = "opuntia.cs.utep.edu";
     private static final String CHAT_SERVER = LOCAL_HOST;
-    private static final int PORT_NUMBER = 8000;
+    private static final int PORT_NUMBER = 8080;
     private Socket socket;
     private ServerSocket serverSocket;
     public static int sentX;
@@ -339,7 +339,7 @@ public class game extends AppCompatActivity {
         PrintWriter out = null;
         try {
             out = new PrintWriter(
-                    new OutputStreamWriter(socket.getOutputStream()));
+                     new OutputStreamWriter(socket.getOutputStream()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -356,6 +356,7 @@ public class game extends AppCompatActivity {
 
             if(msg.equals("miss")){
                 //do miss stuff
+                board.randomBoard[sentX][sentY] = true;
                 //must remember to save what you sent do miss stuff with those coordinates
                 runOnUiThread(new Runnable() {
                     @Override
@@ -366,6 +367,8 @@ public class game extends AppCompatActivity {
 
             }else if(msg.equals("hit")){
                 //do hit stuff
+                board.randomBoard[sentX][sentY] = true;
+                playerBoard.ships[sentX][sentY] = true;
                 //must remember to save what you sent to do hit stuff with those coordinates
                 runOnUiThread(new Runnable() {
                     @Override
@@ -381,6 +384,9 @@ public class game extends AppCompatActivity {
                 String [] cordinates=msg.split(",");
                 int xcord = Integer.parseInt(cordinates[0]); // cordinates to use for cheching your own board
                 int ycord = Integer.parseInt(cordinates[1]);
+                String x = Integer.toString(xcord);
+                String y = Integer.toString(ycord);
+                toast(x + " , " + y);
                 if(yourShipLocation[xcord][ycord]==true){
                     //secondBoard.health--; //can be used to update health but may need to update textview
                     sendMessage("hit");
