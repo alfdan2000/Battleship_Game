@@ -41,7 +41,7 @@ public class game extends AppCompatActivity {
     boolean isHost=false;
     boolean isClient=false;
     Handler handler;
-    private static String LOCAL_HOST ="172.19.159.1";//put your ip address
+    private static String LOCAL_HOST ="192.168.1.89";//put your ip address
     //private static String LOCAL_HOST = "opuntia.cs.utep.edu";
     private static final String CHAT_SERVER = LOCAL_HOST;
     private static final int PORT_NUMBER = 8000;
